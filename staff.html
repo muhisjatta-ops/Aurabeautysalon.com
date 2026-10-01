@@ -3,68 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aura Staff Portal</title>
+  <title>Aura Staff Portal (Secure)</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background-color: var(--floral-white); padding-top: 50px; }
-    .portal-container { max-width: 600px; margin: 0 auto; background: var(--blush-card); padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    body { background-color: #fdfbf7; padding-top: 50px; font-family: sans-serif; }
+    .portal-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   
   <div class="portal-container">
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h2 style="font-family:'Playfair Display', serif; color: #070707;">⏱️ Aura Staff Portal</h2>
-      <p style="color: #666;">Secure Clock-in & Attendance Register</p>
+    <h2>⏱️ Aura Staff Portal</h2>
+    
+    <!-- PIN CODE SECTION -->
+    <div id="pin-section">
+      <p style="color: #666;">Enter Staff PIN to access the terminal.</p>
+      <input type="password" id="staff-pin" placeholder="****" style="padding: 10px; font-size: 1.2rem; width: 100px; text-align: center; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc;">
+      <br>
+      <button onclick="checkPin()" style="background-color: #070707; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Unlock</button>
     </div>
 
-    <div style="margin-bottom: 30px;">
-      <label style="font-weight:600; font-size:0.9rem; margin-bottom:8px; display:block;">Select Staff Member</label>
-      <select id="staff-select-clock" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px; font-family:'Poppins', sans-serif;">
-         <option value="Amie Cham">Amie Cham</option>
-         <option value="Fatima Jallow">Mariama jallow</option>
-         <option value="Amadou Cham">Amadou Jatta</option>
-         <option value="Yamai Jatta">Yamai Jatta</option>
-      </select>
+    <!-- CLOCK IN SECTION (Hidden until PIN is entered) -->
+    <div id="clock-section" class="hidden">
+      <p id="gps-status" style="color: orange; font-weight: bold;">📍 Checking your GPS Location...</p>
+      
+      <div style="margin-bottom: 20px; text-align: left;">
+        <label style="font-weight:600; font-size:0.9rem; margin-bottom:8px; display:block;">Select Staff Member</label>
+        <select id="staff-select-clock" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+           <option value="Amie Cham">Amie Cham</option>
+           <option value="Fatima Jallow">Fatima Jallow</option>
+           <option value="Amadou Jatta">Amadou Jatta</option>
+           <option value="Seedia Jatta">Seedia Jatta</option>
+           <option value="Yamai Jatta">Yamai Jatta</option>
+        </select>
+      </div>
       
       <div style="display:flex; gap:10px;">
-         <button type="button" style="flex:1; background-color:#4CAF50; color:white; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="clockInOut('Clock In')">⏱️ Clock In</button>
-         <button type="button" style="flex:1; background-color:#f44336; color:white; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="clockInOut('Clock Out')">🏃 Clock Out</button>
+         <button id="btn-in" type="button" style="flex:1; background-color:gray; color:white; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:not-allowed;" disabled onclick="clockInOut('Clock In')">⏱️ Clock In</button>
+         <button id="btn-out" type="button" style="flex:1; background-color:gray; color:white; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:not-allowed;" disabled onclick="clockInOut('Clock Out')">🏃 Clock Out</button>
       </div>
-    </div>
 
-    <h3 style="margin-top:40px; font-family:'Playfair Display', serif;">Today's Attendance Log</h3>
-    <div style="margin-top:20px; background: white; border-radius: 8px; padding: 10px; overflow-x: auto;">
-      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size:0.9rem;">
-        <thead>
-          <tr style="border-bottom: 2px solid #eee;">
-            <th style="padding: 10px;">Staff</th>
-            <th style="padding: 10px;">Action</th>
-            <th style="padding: 10px;">Time</th>
-            <th style="padding: 10px;">Date</th>
-          </tr>
-        </thead>
-        <tbody id="attendance-tbody"></tbody>
-      </table>
-    </div>
-    
-    <div style="text-align: center; margin-top: 30px;">
-      <a href="index.html" style="color: #C89B8A; text-decoration: none; font-weight: bold;">← Back to Main Website</a>
+      <h3 style="margin-top:40px;">Today's Log</h3>
+      <div style="background: white; border-radius: 8px; padding: 10px; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size:0.9rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid #eee;">
+              <th style="padding: 10px;">Staff</th>
+              <th style="padding: 10px;">Action</th>
+              <th style="padding: 10px;">Time</th>
+            </tr>
+          </thead>
+          <tbody id="attendance-tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <script>
+    // --- SECURITY SETTINGS ---
+    const SECRET_PIN = "2026"; 
+    
+    // Sukuta Jabang rough GPS coordinates 
+    const SALON_LAT = 13.4116; 
+    const SALON_LNG = -16.7118;
+    const MAX_DISTANCE_KM = 0.5; // Must be within 500 meters of the salon
+
+    function checkPin() {
+      const pin = document.getElementById('staff-pin').value;
+      if (pin === SECRET_PIN) {
+        document.getElementById('pin-section').classList.add('hidden');
+        document.getElementById('clock-section').classList.remove('hidden');
+        verifyGPS();
+        renderAttendance();
+      } else {
+        alert("Incorrect PIN Code!");
+      }
+    }
+
+    function verifyGPS() {
+      const statusText = document.getElementById('gps-status');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+          
+          const R = 6371; 
+          const dLat = (userLat - SALON_LAT) * Math.PI / 180;
+          const dLng = (userLng - SALON_LNG) * Math.PI / 180;
+          const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(SALON_LAT * Math.PI / 180) * Math.cos(userLat * Math.PI / 180) * Math.sin(dLng/2) * Math.sin(dLng/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          const distance = R * c;
+
+          if (distance <= MAX_DISTANCE_KM) {
+            statusText.innerText = "📍 GPS Verified: You are at the salon!";
+            statusText.style.color = "green";
+            document.getElementById('btn-in').style.backgroundColor = "#4CAF50";
+            document.getElementById('btn-in').style.cursor = "pointer";
+            document.getElementById('btn-in').disabled = false;
+            
+            document.getElementById('btn-out').style.backgroundColor = "#f44336";
+            document.getElementById('btn-out').style.cursor = "pointer";
+            document.getElementById('btn-out').disabled = false;
+          } else {
+            statusText.innerText = "❌ GPS Error: You are too far from the salon to clock in.";
+            statusText.style.color = "red";
+          }
+        }, () => {
+          statusText.innerText = "❌ You must allow Location/GPS access to clock in.";
+          statusText.style.color = "red";
+        });
+      } else {
+        statusText.innerText = "❌ GPS is not supported on this device.";
+      }
+    }
+
     function clockInOut(action) {
       const staffName = document.getElementById('staff-select-clock').value;
-      const now = new Date();
-      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const date = now.toISOString().split('T')[0];
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const date = new Date().toISOString().split('T')[0];
       
       const log = { staffName, action, time, date };
       let logs = JSON.parse(localStorage.getItem('aura_attendance')) || [];
-      
-      logs.unshift(log); // Add new entry to the top
+      logs.unshift(log); 
       localStorage.setItem('aura_attendance', JSON.stringify(logs));
       
       alert(`${staffName} successfully ${action === 'Clock In' ? 'clocked in' : 'clocked out'} at ${time}`);
@@ -73,25 +134,15 @@
 
     function renderAttendance() {
       const tbody = document.getElementById('attendance-tbody');
-      if (!tbody) return;
       const logs = JSON.parse(localStorage.getItem('aura_attendance')) || [];
-      
       tbody.innerHTML = logs.map(l => `
         <tr style="border-bottom: 1px solid #f9f9f9;">
           <td style="padding: 10px;"><strong>${l.staffName}</strong></td>
-          <td style="padding: 10px;">
-             <span style="padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; background-color: ${l.action === 'Clock In' ? '#e8f5e9' : '#ffebee'}; color: ${l.action === 'Clock In' ? '#2e7d32' : '#c62828'};">
-                ${l.action}
-             </span>
-          </td>
-          <td style="padding: 10px; color:#555;">${l.time}</td>
-          <td style="padding: 10px; color:#555;">${l.date}</td>
+          <td style="padding: 10px; color: ${l.action === 'Clock In' ? 'green' : 'red'}; font-weight:bold;">${l.action}</td>
+          <td style="padding: 10px;">${l.time}</td>
         </tr>
       `).join('');
     }
-
-    // Load logs on page start
-    document.addEventListener('DOMContentLoaded', renderAttendance);
   </script>
 </body>
 </html>
