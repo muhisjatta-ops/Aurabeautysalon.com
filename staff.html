@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aura Staff Portal (Secure)</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body { background-color: #fdfbf7; padding-top: 50px; font-family: sans-serif; }
     .portal-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
@@ -33,7 +32,7 @@
         <select id="staff-select-clock" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
            <option value="Amie Cham">Amie Cham</option>
            <option value="Amadou Jatta">Amadou Jatta</option>
-           <option value="Seedia Jatta">Mariama barrow</option>
+           <option value="Seedia Jatta">Mariama Barrow</option>
            <option value="Yamai Jatta">Yamai Jatta</option>
         </select>
       </div>
@@ -64,9 +63,16 @@
     const SECRET_PIN = "2026"; 
     
     // Sukuta Jabang rough GPS coordinates 
-    const SALON_LAT = 13°24'03.2"N; 
+    const SALON_LAT = -13°24'03.2"N; 
     const SALON_LNG = -16°42'23.9"W;
-    const MAX_DISTANCE_KM = 0.5; // Must be within 500 meters of the salon
+    const MAX_DISTANCE_KM = 0.5; // Must be within 500 meters
+
+    // Allow pressing "Enter" on keyboard to unlock
+    document.getElementById('staff-pin').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        checkPin();
+      }
+    });
 
     function checkPin() {
       const pin = document.getElementById('staff-pin').value;
