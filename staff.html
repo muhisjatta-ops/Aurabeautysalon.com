@@ -16,7 +16,7 @@
   <div class="portal-container">
     <h2>⏱️ Aura Staff Portal</h2>
     
-    <!-- PIN CODE SECTION -->
+
     <div id="pin-section">
       <p style="color: #666;">Enter Staff PIN to access the terminal.</p>
       <input type="password" id="staff-pin" placeholder="****" style="padding: 10px; font-size: 1.2rem; width: 100px; text-align: center; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc;">
@@ -24,7 +24,7 @@
       <button onclick="checkPin()" style="background-color: #070707; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Unlock</button>
     </div>
 
-    <!-- CLOCK IN SECTION (Hidden until PIN is entered) -->
+
     <div id="clock-section" class="hidden">
       <p id="gps-status" style="color: orange; font-weight: bold;">📍 Checking your GPS Location...</p>
       
@@ -60,13 +60,13 @@
   </div>
 
   <script>
-    // --- SECURITY SETTINGS ---
+   
     const SECRET_PIN = "2026"; 
     
     // Sukuta Jabang rough GPS coordinates 
-    const SALON_LAT = 13.400884; 
-    const SALON_LNG = -16.706627;
-    const MAX_DISTANCE_KM = 0.5; // Must be within 500 meters of the salon
+    const SALON_LAT = 13.24023; 
+    const SALON_LNG = -16.42244;
+    const MAX_DISTANCE_KM = 0.5; 
 
     function checkPin() {
       const pin = document.getElementById('staff-pin').value;
